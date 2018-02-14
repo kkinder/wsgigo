@@ -43,6 +43,32 @@ class TestRouter(unittest.TestCase):
         self.assertEqual(router.get_route_app({'HTTP_HOST': 'localhost', 'PATH_INFO': '/foobar/'}), app2)
         self.assertEqual(router.get_route_app({'HTTP_HOST': 'localhost', 'PATH_INFO': '/spam/'}), app3)
 
+    def test_custom_router(self):
+        from wsgigo import AppRouter, Route
+
+        class InternetExplorerRouter(Route):
+            def claim(self, environ):
+                user_agent = environ['HTTP_USER_AGENT']
+                if 'Trident/7.0' in user_agent or 'MSIE' in user_agent:
+                    return True
+
+        internet_explorer_app = TestWsgiApp("<b>really simple webpage</b>")
+        real_app = TestWsgiApp("<b>really ADVANCED webpage</b>")
+
+        router = AppRouter(default_app=real_app)
+        router.add_route(InternetExplorerRouter(internet_explorer_app))
+
+        self.assertEqual(router.get_route_app(
+            {'HTTP_HOST': 'localhost',
+             'PATH_INFO': '/',
+             'HTTP_USER_AGENT': 'Lynx/2.8.1pre.9 libwww-FM/2.14'}),
+            real_app)
+        self.assertEqual(router.get_route_app(
+            {'HTTP_HOST': 'localhost',
+             'PATH_INFO': '/',
+             'HTTP_USER_AGENT': 'Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko'}),
+            internet_explorer_app)
+
 
 if __name__ == '__main__':
     unittest.main()
