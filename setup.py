@@ -11,8 +11,8 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='wsgigo',
-    version='1.0.0',  # Required
-    description='Simple wsgi app that routes requests to other wsgi apps. A WSGI router.',  # Required
+    version='1.0.1',
+    description='Simple wsgi app that routes requests to other wsgi apps. A WSGI router.',
     long_description=long_description,
     url='https://github.com/kkinder/wsgigo',
     author='Ken Kinder',
