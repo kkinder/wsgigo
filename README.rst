@@ -18,7 +18,7 @@ Usage
 -----
 
 You can use it to route WSGI requests to specific apps based on hostname, URL fragment, or (through extending the
-Route class) other criteria. For example, suppose you have three wsgi apps which you want to serve as one:
+Route class) other criteria. For example, suppose you have three wsgi apps which you want to serve as one::
 
     from wsgigo import AppRouter
 
@@ -26,7 +26,7 @@ Route class) other criteria. For example, suppose you have three wsgi apps which
     app.add_startswith(docs_app, '/docs/')
     app.add_hostname(api_app, 'api.local')
 
-You can also make your own router class, to route apps how you need them to be routed:
+You can also make your own router class, to route apps how you need them to be routed::
 
     class InternetExplorerRouter(Route):
         def claim(self, environ):
