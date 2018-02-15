@@ -5,7 +5,7 @@ wsgigo
 What is it?
 -----------
 
-WSGI go is a very simple WSGI router with no requirements. It does currently require Python 3, though it could be
+WSGI go is a very simple WSGI router with no requirements. It is written for Python 3, though it could be
 easily backported.
 
 Installation
