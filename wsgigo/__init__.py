@@ -10,11 +10,12 @@ class Route:
 
 
 class StandardRoute(Route):
-    def __init__(self, app: callable, startswith: str = None, hostname: str = None):
+    def __init__(self, app: callable, startswith: str = None, hostname: str = None, strip_startswith: bool = False):
         super().__init__(app)
 
         self.startswith = startswith
         self.hostname = hostname
+        self.strip_startswith = strip_startswith
 
     def claim(self, environ):
         path = environ['PATH_INFO']
@@ -22,6 +23,11 @@ class StandardRoute(Route):
 
         if self.startswith:
             if path.startswith(self.startswith):
+                if self.strip_startswith:
+                    path = path[len(self.startswith):]
+                    if not path.startswith('/'):
+                        path = '/' + path
+                    environ['PATH_INFO'] = path
                 return True
         if self.hostname:
             if host.lower() == self.hostname.lower():
@@ -36,8 +42,8 @@ class AppRouter:
     def add_route(self, route: Route):
         self.routes.append(route)
 
-    def add_startswith(self, app, pattern):
-        self.routes.append(StandardRoute(app, startswith=pattern))
+    def add_startswith(self, app, pattern, strip_startswith=False):
+        self.routes.append(StandardRoute(app, startswith=pattern, strip_startswith=strip_startswith))
 
     def add_hostname(self, app, hostname):
         self.routes.append(StandardRoute(app, hostname=hostname))

@@ -43,6 +43,19 @@ class TestRouter(unittest.TestCase):
         self.assertEqual(router.get_route_app({'HTTP_HOST': 'localhost', 'PATH_INFO': '/foobar/'}), app2)
         self.assertEqual(router.get_route_app({'HTTP_HOST': 'localhost', 'PATH_INFO': '/spam/'}), app3)
 
+    def test_startswith_strip_route(self):
+        from wsgigo import AppRouter
+
+        app1 = TestWsgiApp('First app')
+        app2 = TestWsgiApp('Second app')
+
+        router = AppRouter(app1)
+        router.add_startswith(app2, '/foobar/', strip_startswith=True)
+
+        environ = {'HTTP_HOST': 'localhost', 'PATH_INFO': '/foobar/cheese'}
+        self.assertEqual(router.get_route_app(environ), app2)
+        self.assertEqual(environ['PATH_INFO'], '/cheese')
+
     def test_custom_router(self):
         from wsgigo import AppRouter, Route
 
