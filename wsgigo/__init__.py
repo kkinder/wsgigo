@@ -36,7 +36,7 @@ class StandardRoute(Route):
 
 
 class RegExpRoute(Route):
-    def __init__(self, app: callable, pattern: re.Pattern):
+    def __init__(self, app: callable, pattern):
         super().__init__(app)
 
         self.pattern = pattern
@@ -70,7 +70,7 @@ class AppRouter:
         self.routes.append(StandardRoute(app, hostname=hostname))
 
     def add_regexp(self, app, pattern):
-        if not isinstance(pattern, re.Pattern):
+        if isinstance(pattern, str):
             pattern = re.compile(pattern)
         self.routes.append(RegExpRoute(app, pattern))
 
