@@ -1,4 +1,5 @@
 import typing
+import re
 
 
 class Route:
@@ -34,6 +35,26 @@ class StandardRoute(Route):
                 return True
 
 
+class RegExpRoute(Route):
+    def __init__(self, app: callable, pattern: re.Pattern):
+        super().__init__(app)
+
+        self.pattern = pattern
+
+    def claim(self, environ):
+        path = environ['PATH_INFO']
+
+        match = self.pattern.match(path)
+        if match:
+            if match.groups():
+                assert len(match.groups()) == 1, "multiple match groups not supported"
+                path = match.group(1)
+                if not path.startswith('/'):
+                    path = '/' + path
+                environ['PATH_INFO'] = path
+            return True
+
+
 class AppRouter:
     def __init__(self, default_app: callable, routes: typing.List[Route] = None):
         self.default_app = default_app
@@ -47,6 +68,11 @@ class AppRouter:
 
     def add_hostname(self, app, hostname):
         self.routes.append(StandardRoute(app, hostname=hostname))
+
+    def add_regexp(self, app, pattern):
+        if not isinstance(pattern, re.Pattern):
+            pattern = re.compile(pattern)
+        self.routes.append(RegExpRoute(app, pattern))
 
     def get_route_app(self, environ):
         for route in self.routes:

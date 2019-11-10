@@ -1,5 +1,5 @@
 import unittest
-
+import re
 
 class TestWsgiApp:
     def __init__(self, content_to_send="Hello, World"):
@@ -55,6 +55,33 @@ class TestRouter(unittest.TestCase):
         environ = {'HTTP_HOST': 'localhost', 'PATH_INFO': '/foobar/cheese'}
         self.assertEqual(router.get_route_app(environ), app2)
         self.assertEqual(environ['PATH_INFO'], '/cheese')
+
+    def test_regexp_route(self):
+        from wsgigo import AppRouter
+
+        app1 = TestWsgiApp('First app')
+        app2 = TestWsgiApp('Second app')
+        app3 = TestWsgiApp('Third')
+
+        router = AppRouter(app1)
+        router.add_regexp(app2, '/(?:monkey|ape)/')
+        router.add_regexp(app3, re.compile('/cheese/(\w+)/'))
+
+        self.assertEqual(router.get_route_app({'HTTP_HOST': 'localhost', 'PATH_INFO': '/'}), app1)
+
+        environ = {'HTTP_HOST': 'localhost', 'PATH_INFO': '/monkey/george/'}
+        self.assertEqual(router.get_route_app(environ), app2)
+        self.assertEqual(environ['PATH_INFO'], '/monkey/george/')
+
+        environ = {'HTTP_HOST': 'localhost', 'PATH_INFO': '/ape/fred/'}
+        self.assertEqual(router.get_route_app(environ), app2)
+        self.assertEqual(environ['PATH_INFO'], '/ape/fred/')
+
+        environ = {'HTTP_HOST': 'localhost', 'PATH_INFO': '/cheese/brie/'}
+        self.assertEqual(router.get_route_app(environ), app3)
+        self.assertEqual(environ['PATH_INFO'], '/brie')
+
+        self.assertEqual(router.get_route_app({'HTTP_HOST': 'localhost', 'PATH_INFO': '/cheese/cheddar'}), app1)
 
     def test_custom_router(self):
         from wsgigo import AppRouter, Route
