@@ -25,6 +25,7 @@ Route class) other criteria. For example, suppose you have three wsgi apps which
     app = AppRouter(default_app=main_website)
     app.add_startswith(docs_app, '/docs/')
     app.add_hostname(api_app, 'api.local')
+    app.add_regexp(animal_app, '/(?:monkey|ape)/')
 
 You can also make your own router class, to route apps how you need them to be routed::
 
