@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "wsgigo"
+version = "1.3.0"
+description = "WSGI application router"
+authors = ["Ken Kinder <ken+github@kkinder.com>"]
+license = "MIT"
+readme = "README.md"
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Developers',
+    'Environment :: Web Environment',
+    'Topic :: Internet :: WWW/HTTP :: WSGI',
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3'
+]
+
+homepage = "https://github.com/kkinder/wsgigo"
+repository = "https://github.com/kkinder/wsgigo"
+keywords = ["wsgi", "router", "middleware"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.group.dev.dependencies]
+Flask = "^3.0.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
